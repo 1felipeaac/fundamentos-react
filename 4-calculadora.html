@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Rubik&display=swap" rel="stylesheet" />
@@ -163,7 +163,7 @@
         }
         return (
           <CalculatorContext.Provider
-            value={{ history, updateHistory }}
+            value={{ history, updateHistory, historyStorageKey }}
           >
             {children}
           </CalculatorContext.Provider>
@@ -173,13 +173,15 @@
       function useCalculator() {
         const [operation, setOperation] = React.useState("");
         const [result, setResult] = React.useState("");
-        const { updateHistory } = React.useContext(CalculatorContext)
+        const { history, updateHistory } = React.useContext(CalculatorContext)
 
 
-        function doOperation(input) {
+        function doOperation(input, historyStorageKey) {
           if (input === "C") {
             setOperation("");
             setResult("");
+            // console.log(history)
+            // localStorage.removeItem(historyStorageKey);
             return;
           }
 
@@ -250,6 +252,7 @@
 
       function OperationHistory() {
         const { history } = React.useContext(CalculatorContext)
+
         return (
           <Card className="w-full py-10 px-8">
             <Text as="h1" variant="heading" className="mb-4">
@@ -271,9 +274,11 @@
       function Calculator() {
 
         const { operation, result, doOperation } = useCalculator()
+        const { historyStorageKey } = React.useContext(CalculatorContext)
 
         function handleInputClick(input) {
-          doOperation(input)
+          // console.log(historyStorageKey)
+          doOperation(input, historyStorageKey)
         }
         return (
           <Card
